@@ -1,0 +1,6 @@
+- name: configuring my sql server
+  hosts: backend
+  become: yes
+
+  roles:
+  - backend

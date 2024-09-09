@@ -1,0 +1,68 @@
+
+- name: ansible install PyMySQL and Cryptography
+  ansible.builtin.pip:
+    name: 
+    - PyMySQL
+    - cryptography
+    executable: pip3.9
+
+- name: disable default nodejs
+  ansible.builtin.command: dnf module disable nodejs -y
+
+- name: enable nodejs 20
+  ansible.builtin.command: dnf module enable nodejs:20 -y
+
+- name: install nodejs and mysql
+  ansible.builtin.package:
+    name: {{ item }}
+    state: present
+  loop:
+  - nodejs
+  - mysql
+
+- name: create expense user
+  ansible.builtin.user:
+    name: expense
+
+- name: Create App directory
+  ansible.builtin.file:
+    path: /app
+    state: directory
+
+- name: download backend code
+  ansible.builtin.get_url:
+    url: https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip
+    dest: /tmp/backend.zip
+
+- name: extract backend code
+  ansible.builtin.unarchive:
+    src: /tmp/backend.zip #by default ansible thinks file is in ansible server
+    dest: /app
+    remote_src: yes #yes indicates that the file is already in remote server
+
+- name: install dependencies
+  ansible.builtin.command: npm install
+  args:
+    chdir: /app #will go to app directory and install dependencies
+
+- name: copy backend service #copy only works for files without variables
+  ansible.builtin.template:
+    src: backend.service.j2
+    dest: /etc/systemd/system/backend.service
+
+- name: import mysql data
+  community.mysql.mysql_db:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    login_host: "{{ login_host }}"
+    target: /app/schema/backend.sql
+    name: all # name should be all if state is import/dump
+    state: import
+    
+- name: daemon reload
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+    state: restarted
+    name: backend
+
+
