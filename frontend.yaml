@@ -1,0 +1,6 @@
+- name: configuring my sql server
+  hosts: frontend
+  become: yes
+
+  roles:
+  - frontend
