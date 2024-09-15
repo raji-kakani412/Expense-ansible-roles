@@ -2,5 +2,8 @@
   hosts: backend
   become: yes
 
+  vars_files:
+  - /var/expense/mysqlcredentials.yaml
+
   roles:
   - backend
