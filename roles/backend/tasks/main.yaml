@@ -25,11 +25,15 @@
     name: expense
 
 - name: import tasks from common role
+  tags:
+  - deployment
   ansible.builtin.import_role:
     name: common
     tasks_from: app-prereq
 
 - name: install dependencies
+ tags:
+  - deployment
   ansible.builtin.command: npm install
   args:
     chdir: /app #will go to app directory and install dependencies
@@ -49,6 +53,8 @@
     state: import
     
 - name: daemon reload
+  tags:
+  - deployment #-t <tagname> will run only those tasks mainly for filteration
   ansible.builtin.systemd_service:
     daemon_reload: true
     state: restarted
