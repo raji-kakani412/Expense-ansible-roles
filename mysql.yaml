@@ -3,7 +3,7 @@
   become: yes
 
   vars_files:
-  - /var/expense/mysqlcredentials.yaml
+  - /var/expense/mysqlcredentials.yaml #vault file
 
   roles:
   - mysql
