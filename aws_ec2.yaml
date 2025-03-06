@@ -1,5 +1,5 @@
 # this is for dynamic inventory 
-plugin: amazon-aws.aws_ec2
+plugin: amazon.aws.aws_ec2
 regions:
 - us-east-1
 
@@ -11,7 +11,7 @@ hostnames:
 - private_ip_address
 
 compose:
-# this sets the 'ansble_host' variable to connect with private IP address without 
+# this sets the 'ansible_host' variable to connect with private IP address without 
   ansible_host: private_ip_address
 
 

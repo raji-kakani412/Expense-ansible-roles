@@ -1,0 +1,17 @@
+- name: playbook for installing nginx
+  hosts: all
+  become: yes
+  #serial: 2
+  tasks:
+  - name: Installing nginx
+    ansible.builtin.package:
+      name: nginx
+      state: present
+  - name: run nginx
+    ansible.builtin.service:
+     name: nginx 
+     state: started
+     enabled: yes
+    
+
+
